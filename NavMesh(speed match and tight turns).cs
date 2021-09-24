@@ -34,9 +34,16 @@ public class MovementUpdate : MonoBehaviour
         //
         // rotate agent to look at target
         Vector3 dir = navmesh.steeringTarget - transform.position;
-        dir.y = 0; // only rotate on y axis
-        Quaternion rot = Quaternion.LookRotation(dir);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, rotSpeed * Time.deltaTime);
+        // prevent error "Look rotation viewing vector is zero"
+        if (dir != Vector3.zero)
+        {
+            dir.y = 0; // only rotate on y axis
+            Quaternion rot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rot, rotSpeed * Time.deltaTime);
+        }
+        //dir.y = 0; // only rotate on y axis
+        //Quaternion rot = Quaternion.LookRotation(dir);
+        //transform.rotation = Quaternion.Lerp(transform.rotation, rot, rotSpeed * Time.deltaTime);
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     }
 }
