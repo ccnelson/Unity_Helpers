@@ -17,7 +17,10 @@ public class NPCDoorInteract : MonoBehaviour
     {
         if (other.CompareTag("NPC"))
         {
-            di.Interact();
+            if (!di.dooropen)
+            {
+                di.DoorOpen();
+            }
         }
     }
 
@@ -25,7 +28,10 @@ public class NPCDoorInteract : MonoBehaviour
     {
         if (other.CompareTag("NPC"))
         {
-            di.Interact();
+            if (di.dooropen)
+            {
+                di.DoorClose();
+            }
         }
     }
 }

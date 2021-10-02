@@ -4,14 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// attach to door
+// attach to door with collider
 
 [RequireComponent(typeof(Collider))]
 
 public class DoorInteract : MonoBehaviour
 {
     Animator anim;
-    bool dooropen = false;
+    public bool dooropen = false;
 
     private void Start()
     {
@@ -27,13 +27,23 @@ public class DoorInteract : MonoBehaviour
     {
         if (dooropen)
         {
-            anim.Play("doorclose");
-            dooropen = false;
+            DoorClose();
         }
         else
         {
-            anim.Play("dooropen");
-            dooropen = true;
+            DoorOpen();
         }
+    }
+
+    public void DoorOpen()
+    {
+        dooropen = true;
+        anim.Play("dooropen");
+    }
+
+    public void DoorClose()
+    {
+        dooropen = false;
+        anim.Play("doorclose");
     }
 }
