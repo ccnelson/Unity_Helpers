@@ -1,6 +1,5 @@
 // C NELSON 2021
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -9,9 +8,46 @@ using UnityEditor;
 // Accompanies ManageModularOutfit.
 // Provides inspector interface for switching body parts.
 
+
+[System.Serializable]
 [CustomEditor(typeof(ManageModularOutfit))]
 public class ManageModularOutfitEditor : Editor
 {
+    string[] _hatChoices;
+    int _hatChoiceIndex = 0;
+
+    string[] _hatAttachmentChoices;
+    int _hatAttachmentChoiceIndex = 0;
+
+    string[] _backAttachmentChoices;
+    int _backAttachmentChoiceIndex = 0;
+
+    string[] _leftShoulderAttachmentChoices;
+    int _leftShoulderAttachmentChoiceIndex = 0;
+
+    string[] _rightShoulderAttachmentChoices;
+    int _rightShoulderAttachmentChoiceIndex = 0;
+
+    string[] _leftElbowAttachmentChoices;
+    int _leftElbowAttachmentChoiceIndex = 0;
+
+    string[] _rightElbowAttachmentChoices;
+    int _rightElbowAttachmentChoiceIndex = 0;
+
+    string[] _hipAttachmentChoices;
+    int _hipAttachmentChoiceIndex = 0;
+
+    string[] _leftKneeAttachmentChoices;
+    int _leftKneeAttachmentChoiceIndex = 0;
+
+    string[] _rightKneeAttachmentChoices;
+    int _rightKneeAttachmentChoiceIndex = 0;
+
+    string[] _elfEarsChoices;
+    int _elfEarsChoiceIndex = 0;
+
+    string[] _hairChoices;
+    int _hairChoiceIndex = 0;
 
     string[] _headChoices;
     int _headChoiceIndex = 0;
@@ -56,100 +92,173 @@ public class ManageModularOutfitEditor : Editor
     {
         mmo = (ManageModularOutfit)target;
 
-        _headChoices = TranformToString(_headChoices, mmo.heads);
-        _eyebrowChoices = TranformToString(_eyebrowChoices, mmo.eyebrows);
-        _torsoChoices = TranformToString(_torsoChoices, mmo.torsos);
-        _upperLeftArmChoices = TranformToString(_upperLeftArmChoices, mmo.upperLeftArms);
-        _lowerLeftArmChoices = TranformToString(_lowerLeftArmChoices, mmo.lowerLeftArms);
-        _upperRightArmChoices = TranformToString(_upperRightArmChoices, mmo.upperRightArms);
-        _lowerRightArmChoices = TranformToString(_lowerRightArmChoices, mmo.lowerRightArms);
-        _leftHandChoices = TranformToString(_leftHandChoices, mmo.leftHands);
-        _rightHandChoices = TranformToString(_rightHandChoices, mmo.rightHands);
-        _hipsChoices = TranformToString(_hipsChoices, mmo.hips);
-        _leftLegChoices = TranformToString(_leftLegChoices, mmo.leftLegs);
-        _rightLegChoices = TranformToString(_rightLegChoices, mmo.rightLegs);
+        // create lists of options from parent transforms provided by user
+        _hatChoices = TransformToString(_hatChoices, mmo.mmomData.hats);
+        _hatAttachmentChoices = TransformToString(_hatAttachmentChoices, mmo.mmomData.hatAttachments);
+        _backAttachmentChoices = TransformToString(_backAttachmentChoices, mmo.mmomData.backAttachments);
+        _leftShoulderAttachmentChoices = TransformToString(_leftShoulderAttachmentChoices, mmo.mmomData.leftShoulderAttachments);
+        _rightShoulderAttachmentChoices = TransformToString(_rightShoulderAttachmentChoices, mmo.mmomData.rightShoulderAttachments);
+        _leftElbowAttachmentChoices = TransformToString(_leftElbowAttachmentChoices, mmo.mmomData.leftElbowAttachments);
+        _rightElbowAttachmentChoices = TransformToString(_rightElbowAttachmentChoices, mmo.mmomData.rightElbowAttachments);
+        _hipAttachmentChoices = TransformToString(_hipAttachmentChoices, mmo.mmomData.hipAttachments);
+        _leftKneeAttachmentChoices = TransformToString(_leftKneeAttachmentChoices, mmo.mmomData.leftKneeAttachments);
+        _rightKneeAttachmentChoices = TransformToString(_rightKneeAttachmentChoices, mmo.mmomData.rightKneeAttachments);
+        _elfEarsChoices = TransformToString(_elfEarsChoices, mmo.mmomData.elfEars);
+        _hairChoices = TransformToString(_hairChoices, mmo.mmomData.hairs);
+        _headChoices = TransformToString(_headChoices, mmo.mmomData.heads);
+        _eyebrowChoices = TransformToString(_eyebrowChoices, mmo.mmomData.eyebrows);
+        _torsoChoices = TransformToString(_torsoChoices, mmo.mmomData.torsos);
+        _upperLeftArmChoices = TransformToString(_upperLeftArmChoices, mmo.mmomData.upperLeftArms);
+        _lowerLeftArmChoices = TransformToString(_lowerLeftArmChoices, mmo.mmomData.lowerLeftArms);
+        _upperRightArmChoices = TransformToString(_upperRightArmChoices, mmo.mmomData.upperRightArms);
+        _lowerRightArmChoices = TransformToString(_lowerRightArmChoices, mmo.mmomData.lowerRightArms);
+        _leftHandChoices = TransformToString(_leftHandChoices, mmo.mmomData.leftHands);
+        _rightHandChoices = TransformToString(_rightHandChoices, mmo.mmomData.rightHands);
+        _hipsChoices = TransformToString(_hipsChoices, mmo.mmomData.hips);
+        _leftLegChoices = TransformToString(_leftLegChoices, mmo.mmomData.leftLegs);
+        _rightLegChoices = TransformToString(_rightLegChoices, mmo.mmomData.rightLegs);
     }
 
 
     public override void OnInspectorGUI()
     {
+
+        GUILayout.Label("\nSETUP:");
+
+        GUILayout.BeginVertical();
         DrawDefaultInspector();
+        GUILayout.EndVertical();
+        
 
-        _headChoiceIndex = EditorGUILayout.Popup(_headChoiceIndex, _headChoices);
-        if (GUILayout.Button("Change head"))
-        {
-            ToggleObject(ref mmo.currentHead, mmo.heads, _headChoiceIndex);
-        }
+        GUILayout.Label("\nCUSTOMISE:\n");
 
-        _eyebrowChoiceIndex = EditorGUILayout.Popup(_eyebrowChoiceIndex, _eyebrowChoices);
-        if (GUILayout.Button("Change eyebrow"))
-        {
-            ToggleObject(ref mmo.currentEyebrows, mmo.eyebrows, _eyebrowChoiceIndex);
-        }
+        GUILayout.Label("\t\tBODY");
 
-        _torsoChoiceIndex = EditorGUILayout.Popup(_torsoChoiceIndex, _torsoChoices);
-        if (GUILayout.Button("Change torso"))
-        {
-            ToggleObject(ref mmo.currentTorso, mmo.torsos, _torsoChoiceIndex);
-        }
+        GUILayout.Label("Hair:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _hairChoiceIndex, _hairChoices, ref mmo.mmomData.currentHair, mmo.mmomData.hairs);
+        GUILayout.EndHorizontal();
 
-        _upperLeftArmChoiceIndex = EditorGUILayout.Popup(_upperLeftArmChoiceIndex, _upperLeftArmChoices);
-        if (GUILayout.Button("Change upper left arm"))
-        {
-            ToggleObject(ref mmo.currentUpperLeftArm, mmo.upperLeftArms, _upperLeftArmChoiceIndex);
-        }
+        GUILayout.Label("Head:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _headChoiceIndex, _headChoices, ref mmo.mmomData.currentHead, mmo.mmomData.heads);
+        GUILayout.EndHorizontal();
 
-        _lowerLeftArmChoiceIndex = EditorGUILayout.Popup(_lowerLeftArmChoiceIndex, _lowerLeftArmChoices);
-        if (GUILayout.Button("Change lower left arm"))
-        {
-            ToggleObject(ref mmo.currentLowerLeftArm, mmo.lowerLeftArms, _lowerLeftArmChoiceIndex);
-        }
+        GUILayout.Label("Eyebrows:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _eyebrowChoiceIndex, _eyebrowChoices, ref mmo.mmomData.currentEyebrows, mmo.mmomData.eyebrows);
+        GUILayout.EndHorizontal();
 
-        _upperRightArmChoiceIndex = EditorGUILayout.Popup(_upperRightArmChoiceIndex, _upperRightArmChoices);
-        if (GUILayout.Button("Change upper right arm"))
-        {
-            ToggleObject(ref mmo.currentUpperRightArm, mmo.upperRightArms, _upperRightArmChoiceIndex);
-        }
+        GUILayout.Label("Elf ears:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _elfEarsChoiceIndex, _elfEarsChoices, ref mmo.mmomData.currentElfEars, mmo.mmomData.elfEars);
+        GUILayout.EndHorizontal();
 
-        _lowerRightArmChoiceIndex = EditorGUILayout.Popup(_lowerRightArmChoiceIndex, _lowerRightArmChoices);
-        if (GUILayout.Button("Change lower right arm"))
-        {
-            ToggleObject(ref mmo.currentLowerRightArm, mmo.lowerRightArms, _lowerRightArmChoiceIndex);
-        }
+        GUILayout.Label("Torso:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _torsoChoiceIndex, _torsoChoices, ref mmo.mmomData.currentTorso, mmo.mmomData.torsos);
+        GUILayout.EndHorizontal();
 
-        _leftHandChoiceIndex = EditorGUILayout.Popup(_leftHandChoiceIndex, _leftHandChoices);
-        if (GUILayout.Button("Change left hand"))
-        {
-            ToggleObject(ref mmo.currentLeftHand, mmo.leftHands, _leftHandChoiceIndex);
-        }
+        GUILayout.Label("Upper right arm:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _upperRightArmChoiceIndex, _upperRightArmChoices, ref mmo.mmomData.currentUpperRightArm, mmo.mmomData.upperRightArms);
+        GUILayout.EndHorizontal();
 
-        _rightHandChoiceIndex = EditorGUILayout.Popup(_rightHandChoiceIndex, _rightHandChoices);
-        if (GUILayout.Button("Change right hand"))
-        {
-            ToggleObject(ref mmo.currentRightHand, mmo.rightHands, _rightHandChoiceIndex);
-        }
+        GUILayout.Label("Upper left arm:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _upperLeftArmChoiceIndex, _upperLeftArmChoices, ref mmo.mmomData.currentUpperLeftArm, mmo.mmomData.upperLeftArms);
+        GUILayout.EndHorizontal();
 
-        _hipsChoiceIndex = EditorGUILayout.Popup(_hipsChoiceIndex, _hipsChoices);
-        if (GUILayout.Button("Change hips"))
-        {
-            ToggleObject(ref mmo.currentHips, mmo.hips, _hipsChoiceIndex);
-        }
+        GUILayout.Label("Lower right arm:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _lowerRightArmChoiceIndex, _lowerRightArmChoices, ref mmo.mmomData.currentLowerRightArm, mmo.mmomData.lowerRightArms);
+        GUILayout.EndHorizontal();
 
-        _leftLegChoiceIndex = EditorGUILayout.Popup(_leftLegChoiceIndex, _leftLegChoices);
-        if (GUILayout.Button("Change left leg"))
-        {
-            ToggleObject(ref mmo.currentLeftLeg, mmo.leftLegs, _leftLegChoiceIndex);
-        }
+        GUILayout.Label("Lower left arm:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _lowerLeftArmChoiceIndex, _lowerLeftArmChoices, ref mmo.mmomData.currentLowerLeftArm, mmo.mmomData.lowerLeftArms);
+        GUILayout.EndHorizontal();
 
-        _rightLegChoiceIndex = EditorGUILayout.Popup(_rightLegChoiceIndex, _rightLegChoices);
-        if (GUILayout.Button("Change right leg"))
-        {
-            ToggleObject(ref mmo.currentRightLeg, mmo.rightLegs, _rightLegChoiceIndex);
-        }
+        GUILayout.Label("Right hand:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _rightHandChoiceIndex, _rightHandChoices, ref mmo.mmomData.currentRightHand, mmo.mmomData.rightHands);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Left hand:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _leftHandChoiceIndex, _leftHandChoices, ref mmo.mmomData.currentLeftHand, mmo.mmomData.leftHands);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Hips:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _hipsChoiceIndex, _hipsChoices, ref mmo.mmomData.currentHips, mmo.mmomData.hips);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Right leg:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _rightLegChoiceIndex, _rightLegChoices, ref mmo.mmomData.currentRightLeg, mmo.mmomData.rightLegs);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Left leg:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _leftLegChoiceIndex, _leftLegChoices, ref mmo.mmomData.currentLeftLeg, mmo.mmomData.leftLegs);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("\t\tACCESSORIES");
+
+        GUILayout.Label("Hat:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _hatChoiceIndex, _hatChoices, ref mmo.mmomData.currentHat, mmo.mmomData.hats);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Hat attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _hatAttachmentChoiceIndex, _hatAttachmentChoices, ref mmo.mmomData.currentHatAttachment, mmo.mmomData.hatAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Back attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _backAttachmentChoiceIndex, _backAttachmentChoices, ref mmo.mmomData.currentBackAttachment, mmo.mmomData.backAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Right shoulder attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _rightShoulderAttachmentChoiceIndex, _rightShoulderAttachmentChoices, ref mmo.mmomData.currentRightShoulderAttachment, mmo.mmomData.rightShoulderAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Left shoulder attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _leftShoulderAttachmentChoiceIndex, _leftShoulderAttachmentChoices, ref mmo.mmomData.currentLeftShoulderAttachment, mmo.mmomData.leftShoulderAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Right elbow attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _rightElbowAttachmentChoiceIndex, _rightElbowAttachmentChoices, ref mmo.mmomData.currentRightElbowAttachment, mmo.mmomData.rightElbowAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Left elbow attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _leftElbowAttachmentChoiceIndex, _leftElbowAttachmentChoices, ref mmo.mmomData.currentLeftElbowAttachment, mmo.mmomData.leftElbowAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Hip attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _hipAttachmentChoiceIndex, _hipAttachmentChoices, ref mmo.mmomData.currentHipAttachment, mmo.mmomData.hipAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Right knee attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _rightKneeAttachmentChoiceIndex, _rightKneeAttachmentChoices, ref mmo.mmomData.currentRightKneeAttachment, mmo.mmomData.rightKneeAttachments);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label("Left knee attachments:");
+        GUILayout.BeginHorizontal();
+        DoGUI(ref _leftKneeAttachmentChoiceIndex, _leftKneeAttachmentChoices, ref mmo.mmomData.currentLeftKneeAttachment, mmo.mmomData.leftKneeAttachments);
+        GUILayout.EndHorizontal();
 
     }
 
-
+    // deactive current object, swicth to object indexed in list, active new object
     void ToggleObject(ref Transform tTo, List<Transform> tlFrom, int i)
     {
         if (tTo != null)
@@ -160,7 +269,8 @@ public class ManageModularOutfitEditor : Editor
         tTo.gameObject.SetActive(true);
     }
 
-    string[] TranformToString(string[] s, List<Transform> lt)
+    // generate a list of strings from a list of transforms to reference as options in UI
+    string[] TransformToString(string[] s, List<Transform> lt)
     {
         s = new string[lt.Count];
 
@@ -169,5 +279,24 @@ public class ManageModularOutfitEditor : Editor
             s[i] = lt[i].name.ToString();
         }
         return s;
+    }
+
+    // present user with popup list, save the selection as an index, use index to 
+    // toggle objects on button press
+    void DoGUI(ref int choiceIndex, string[] choices, ref Transform current, List<Transform> all)
+    {
+        choiceIndex = EditorGUILayout.Popup(choiceIndex, choices);
+        if (GUILayout.Button("Change"))
+        {
+            ToggleObject(ref current, all, choiceIndex);
+        }
+        if (GUILayout.Button("Clear"))
+        {
+            if (current != null)
+            {
+                current.gameObject.SetActive(false);
+            }
+            
+        }
     }
 }
