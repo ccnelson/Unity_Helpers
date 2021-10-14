@@ -10,5 +10,5 @@ public class SkyGradient_ScriptableObject : ScriptableObject
 {
     public Gradient AmbientColour;
     public Gradient DirectionalColour;
-    public Gradient FogColour;
+    //public Gradient FogColour;
 }
