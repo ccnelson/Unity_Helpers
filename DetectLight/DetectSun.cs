@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // performs raycast between target and light source.
-// assign target and sunlight source (directional light).
+// assign target (player head bone) and sunlight source (directional light).
 // select layers to be ignored (player and ground).
 
 public class DetectSun : MonoBehaviour
