@@ -1,0 +1,22 @@
+// C NELSON 2021
+// (Inventory prototyping)
+// This forms the start of a basic inventory, allow a player to equip modular items from storage.
+
+
+Attached to player:
+
+ManageModularOutfit.cs, containing data tracking currently equipped items, and maps unity game object names to readable names.
+
+Interact.cs, which deals with interactions (also used for doors)
+This requires inspector links to the UI text prompt ("e" to interact), the storage UI screen prompt (an inactive empty square, which the required UI prefabs are spawned onto), and the storageUI script (attached to the UI element)
+
+Attached to the storage item:
+
+StorageInteraction.cs, this contains a list of contents (and their respective types) - and OnTriggerEnter / Exit methods to recognise when the player is within interaction distance.
+This is populated via inspector with contents from the modular character hierarchy. Essentially it contains inactive parts of the characters body, along with types for classification.
+Also has a link to the StorageUI script attached to UI element.
+
+
+Attached to UI elements:
+
+StorageUI.cs, this creates or hides the interaction interface, customised according to the interacted storage. This requires a Button Prefab assigned in inspector (empty text alligned with a button - populated depending on the content of the storage item). The prefab creates a name and a button with a function to activate / deativate body parts. This also has insepctor links to ManageModularOutfit script, and a UI text element called Header (a sibling to the main StorageUI element) - indicating the status of the storage when interacting (but independant of the main interface shown).
