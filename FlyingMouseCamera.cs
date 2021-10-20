@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
@@ -21,21 +20,21 @@ public class FlyingMouseCamera : MonoBehaviour
 		}
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		if (focusOnEnable) Focused = true;
 	}
 
-	void OnDisable() => Focused = false;
+	private void OnDisable() => Focused = false;
 
-	void Update()
+	private void Update()
 	{
 		if (Focused)
-        {
+		{
 			UpdateInput();
 		}
 		else if (Input.GetMouseButtonDown(0))
-        {
+		{
 			Focused = true;
 		}
 		
@@ -43,7 +42,7 @@ public class FlyingMouseCamera : MonoBehaviour
 		transform.position += velocity * Time.deltaTime;
 	}
 
-	void UpdateInput()
+	private void UpdateInput()
 	{
 		velocity += GetAccelerationVector() * Time.deltaTime;
 		Vector2 mouseDelta = lookSensitivity * new Vector2(Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"));
@@ -53,20 +52,22 @@ public class FlyingMouseCamera : MonoBehaviour
 		transform.rotation = horiz * rotation * vert;
 
 		if (Input.GetKeyDown(KeyCode.Escape))
-        {
+		{
 			Focused = false;
 		}
 			
 	}
 
-	Vector3 GetAccelerationVector()
+	private Vector3 GetAccelerationVector()
 	{
 		Vector3 moveInput = default;
+		
 		void AddMovement(KeyCode key, Vector3 dir)
 		{
 			if (Input.GetKey(key))
 				moveInput += dir;
 		}
+		
 		AddMovement(KeyCode.W, Vector3.forward);
 		AddMovement(KeyCode.S, Vector3.back);
 		AddMovement(KeyCode.D, Vector3.right);
@@ -76,7 +77,7 @@ public class FlyingMouseCamera : MonoBehaviour
 		Vector3 direction = transform.TransformVector(moveInput.normalized);
 
 		if (Input.GetKey(KeyCode.LeftShift))
-        {
+		{
 			return direction * (acceleration * accSprintMultiplier);
 		}
 		return direction * acceleration;
