@@ -1,4 +1,5 @@
 // C NELSON 2021
+using System.Collections;
 using UnityEngine;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8,9 +9,8 @@ using UnityEngine;
 // In the centre of the scene have a bright directional yellow light, the sun.
 // As a child of the sun, in the same position but pointing in the opposite direction,
 // a dull blue light as the moon.
-//Aalso a child of the sun, far out along the trajectory the moon light will shine, a moon texture.
-// (a specular transparent material assigned to a quad, with a texture sprite using transparent alpha).
-// optionally have a domed mesh cover the main area, using a material linked to a shadergraph
+// Also a child of the sun, far out along the trajectory the moon light will shine, a sphere with a moon texture.
+// Optionally have a domed mesh cover the main area, using a material linked to a shadergraph
 // using noise patterns to blend alpha and colour to generate clouds.
 // The skygradient scriptable object contains two gradients, controlling the light colour
 // of the sun, and the overall ambient light of the scene.
@@ -19,8 +19,10 @@ using UnityEngine;
 // Stars is a gameobject holding a particle effect.
 //////// LIGHTING //////////////////
 // Skybox Material: Skybox_Mat (shader = Skybox/Procedural) (a generic empty sky)
+// Or SkyBox Material: Default-Skybox works just as well.
 // Sun Source: your sun direcional light
-// Environmental lighting Source: Skybox.
+// Environmental lighting Source: Skybox (makes ambient light redundant).
+// Environmental lighting Source: Colour (use ambient gradient alongside directional lights).
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 public class DayNightCycle : MonoBehaviour
@@ -35,47 +37,18 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private timePhases dayPhase;
     [SerializeField] private TimeOfDay_ScriptableObject todSO;
 
-    private bool sunIsOut = false;
+    private bool sunIsOut;
 
     private void Awake()
     {
         NightTime();
+        dayPhase = timePhases.NIGHT;
+        sunIsOut = false;
     }
-    private void LateUpdate()
+
+    private void Start()
     {
-        timeOfDay += Time.deltaTime / speed;
-        timeOfDay %= 24;
-        UpdateLights(timeOfDay / 24f);
-
-        if (sunIsOut == false && (timeOfDay > 5f && timeOfDay < 18f))
-        {
-            DayTime();
-        }
-
-        else if (sunIsOut == true && (timeOfDay < 5f || timeOfDay > 18f))
-        {
-            NightTime();
-        }
-
-        if (dayPhase != timePhases.MORNING && timeOfDay > 6f && timeOfDay < 12f )
-        {
-            dayPhase = timePhases.MORNING;
-        }
-        else if (dayPhase != timePhases.AFTERNOON && timeOfDay > 12f && timeOfDay < 16f)
-        {
-            dayPhase = timePhases.AFTERNOON;
-        }
-        else if (dayPhase != timePhases.EVENING && timeOfDay > 16f && timeOfDay < 20f)
-        {
-            dayPhase = timePhases.EVENING;
-        }
-        else if (dayPhase != timePhases.NIGHT && timeOfDay > 20f || timeOfDay < 6f)
-        {
-            dayPhase = timePhases.NIGHT;
-        }
-
-        todSO.time = timeOfDay;
-        todSO.phase = dayPhase.ToString();
+        StartCoroutine(TimeCoroutine());
     }
 
     private void UpdateLights(float timePercent)
@@ -83,7 +56,6 @@ public class DayNightCycle : MonoBehaviour
         RenderSettings.ambientLight = presetGradient.AmbientColour.Evaluate(timePercent);
         sun.color = presetGradient.DirectionalColour.Evaluate(timePercent);
         //RenderSettings.fogColor = presetGradient.FogColour.Evaluate(timePercent);
-
         sun.transform.localRotation = Quaternion.Euler(new Vector3((timePercent * 360f) - 90f, 170f, 0));
     }
 
@@ -101,5 +73,45 @@ public class DayNightCycle : MonoBehaviour
         moon.enabled = true;
         stars.SetActive(true);
         sunIsOut = false;
+    }
+
+    IEnumerator TimeCoroutine()
+    {
+        while (true)
+        {
+            timeOfDay += 0.5f / speed;
+            timeOfDay %= 24;
+            UpdateLights(timeOfDay / 24f);
+
+            if (sunIsOut == false && dayPhase == timePhases.MORNING)
+            {
+                DayTime();
+            }
+            else if (sunIsOut == true && dayPhase == timePhases.NIGHT)
+            {
+                NightTime();
+            }
+
+            switch (Mathf.Floor(timeOfDay))
+            {
+                case 6:
+                    dayPhase = timePhases.MORNING;
+                    break;
+                case 12:
+                    dayPhase = timePhases.AFTERNOON;
+                    break;
+                case 16:
+                    dayPhase = timePhases.EVENING;
+                    break;
+                case 20:
+                    dayPhase = timePhases.NIGHT;
+                    break;
+            }
+
+            todSO.time = timeOfDay;
+            todSO.phase = dayPhase.ToString();
+
+            yield return new WaitForSeconds(0.25f);
+        }
     }
 }
