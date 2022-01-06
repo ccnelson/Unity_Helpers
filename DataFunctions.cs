@@ -74,4 +74,85 @@ public class DataFunctions : MonoBehaviour
         }
         return listOfPoints;
     }
+
+
+    public float MeasureDistance(List<Vector3> locations, List<int> sequence)
+    {
+        float result = 0f;
+
+        for (int i = 0; i < sequence.Count -1; i++)
+        {
+            result += Vector3.Distance(locations[sequence[i]], locations[sequence[i + 1]]);
+        }
+
+        return result;
+    }
+
+
+    public void TrimListFirstAndLast(List<int> inputList)
+    {
+        inputList.RemoveAt(0);
+        inputList.RemoveAt(inputList.Count - 1);
+    }
+
+
+    public void InsertZeroesAtFirstAndLast(List<int> inputList)
+    {
+        inputList.Insert(0, 0);
+        inputList.Add(0);
+    }
+
+
+    public List<int> Crossover(List<int> _parentA, List<int> _parentB)
+    {
+        // clone and trim lists
+        List<int> parentA = CloneIntList(_parentA);
+        List<int> parentB = CloneIntList(_parentB);
+        TrimListFirstAndLast(parentA);
+        TrimListFirstAndLast(parentB);
+        // set a random crossover somewhere inside sequence
+        int crossoverPos = Random.Range(1, parentA.Count - 1);
+        
+        // populate offspring with placeholder values
+        List<int> offSpring = new List<int>();
+        foreach(int x in parentA)
+        {
+            offSpring.Add(0);
+        }
+
+        // copy parent A upto crossoverPos
+        for (int i = 0; i < crossoverPos; i++)
+        {
+            offSpring[i] = parentA[i];
+        }
+
+        // copy parent B from crossoverPos, igoring duplicates
+        for (int i = crossoverPos; i < offSpring.Count; i++)
+        {
+            if (!offSpring.Contains(parentB[i]))
+            {
+                offSpring[i] = parentB[i];
+            }
+        }
+
+        // fill in gaps, preserving sequence from parent B
+        for (int i = 0; i < offSpring.Count; i++)
+        {
+            if (offSpring[i] == 0)
+            {
+                foreach(int x in parentB)
+                {
+                    if(!offSpring.Contains(x))
+                    {
+                        offSpring[i] = x;
+                        break;
+                    }
+                }
+            }
+        }
+        // replace leading and ending zeroes
+        InsertZeroesAtFirstAndLast(offSpring);
+
+        return offSpring;
+    }
 }
