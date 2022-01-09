@@ -155,4 +155,33 @@ public class DataFunctions : MonoBehaviour
 
         return offSpring;
     }
+
+    public ulong GetFactorial(ulong n)
+    {
+        ulong result = 1;
+        for (ulong i = n; i > 0; i--)
+        {
+            result *= i;
+        }
+        return result;
+    }
+
+    public List<int> Mutate(List<int> inputList)
+    {
+        List<int> outputList = new List<int>();
+        outputList = CloneIntList(inputList);
+
+        TrimListFirstAndLast(outputList);
+
+        int a = Random.Range(0, outputList.Count);
+        int b = Random.Range(0, outputList.Count);
+
+        int temp = outputList[a];
+        outputList[a] = outputList[b];
+        outputList[b] = temp;
+
+        InsertZeroesAtFirstAndLast(outputList);
+
+        return outputList;
+    }
 }
