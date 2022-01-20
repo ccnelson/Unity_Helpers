@@ -28,13 +28,11 @@ public class Crossover
         {
             offSpring.Add(0);
         }
-
         // copy parent A upto crossoverPos
         for (int i = 0; i <= crossoverPos; i++)
         {
             offSpring[i] = parentA[i];
         }
-
         // copy parent B from crossoverPos, igoring duplicates
         for (int i = crossoverPos +1; i < offSpring.Count; i++)
         {
@@ -43,7 +41,6 @@ public class Crossover
                 offSpring[i] = parentB[i];
             }
         }
-
         // fill in gaps, preserving sequence from parent B
         for (int i = 0; i < offSpring.Count; i++)
         {
@@ -61,7 +58,6 @@ public class Crossover
         }
         // replace leading and ending zeroes
         df.InsertZeroesAtFirstAndLast(offSpring);
-
         return offSpring;
     }
 
@@ -73,25 +69,20 @@ public class Crossover
         List<int> parentB = df.CloneIntList(_parentB);
         df.TrimListFirstAndLast(parentA);
         df.TrimListFirstAndLast(parentB);
-
         // choose 2 random points (starting a at zero and ending b at count would perhaps give more diversity?)
         int a = Random.Range(1, parentA.Count - 2);
         int b = Random.Range(a + 1, parentA.Count -1);
-
         List<int> offspring = new List<int>();
-
         // initialise with zeros
         for (int i = 0; i < parentA.Count; i++)
         {
             offspring.Add(0);
         }
-
         // copy chosen positions from parentB
         for (int i = a; i <= b; i++)
         {
             offspring[i] = parentB[i];
         }
-
         // iterate using parentA to fill in blanks
         for (int i = 0; i < offspring.Count; i++)
         {
@@ -107,9 +98,7 @@ public class Crossover
                 }
             }
         }
-
         df.InsertZeroesAtFirstAndLast(offspring);
-
         return offspring;
     }
 
@@ -121,16 +110,12 @@ public class Crossover
         List<int> parentB = df.CloneIntList(_parentB);
         df.TrimListFirstAndLast(parentA);
         df.TrimListFirstAndLast(parentB);
-
         // start with parent B
         List<int> offspring = new List<int>();
         offspring = df.CloneIntList(parentB);
-
         // choose a random number of positions, at least 2 (its a combination), but less than all of them
         int noOfPositions = Random.Range(2, parentA.Count -1);
-
         List<int> positionsChosen = new List<int>();
-
         // generate this number of valid (unique) positions from within the gene sequence
         for (int i = 0; i < noOfPositions; i++)
         {
@@ -143,17 +128,14 @@ public class Crossover
         }
         // and put them in order
         positionsChosen.Sort();
-
         // get the values residing at these positions in parent A, and put in a queue for later
         List<int> valuesChosen = new List<int>();
         Queue<int> valuesChosenQ = new Queue<int>();
-
         for (int i = 0; i < positionsChosen.Count; i++)
         {
             valuesChosen.Add(parentA[positionsChosen[i]]);
             valuesChosenQ.Enqueue(parentA[positionsChosen[i]]);
         }
-
         // iterate offspring, imposing the order of the values chosen from parent A
         for (int i = 0; i < offspring.Count; i++)
         {
@@ -162,9 +144,7 @@ public class Crossover
                 offspring[i] = valuesChosenQ.Dequeue();
             }
         }
-
         df.InsertZeroesAtFirstAndLast(offspring);
-
         return offspring;
     }
 }

@@ -113,25 +113,16 @@ public class DataFunctions
         return result.ToString("#,##0");
     }
 
-    public List<int> Mutate(List<int> inputList)
+
+    public bool CheckListsMatch(List<int> lista, List<int> listb)
     {
-        List<int> outputList = new List<int>();
-        outputList = CloneIntList(inputList);
-        TrimListFirstAndLast(outputList);
-
-        int a = Random.Range(0, outputList.Count);
-        int b = Random.Range(0, outputList.Count);
-        while (a == b)
+        for (int i = 0; i < lista.Count; i++)
         {
-            b = Random.Range(0, outputList.Count);
+            if (lista[i] != listb[i])
+            {
+                return false;
+            }
         }
-
-        int temp = outputList[a];
-        outputList[a] = outputList[b];
-        outputList[b] = temp;
-
-        InsertZeroesAtFirstAndLast(outputList);
-
-        return outputList;
+        return true;
     }
 }
