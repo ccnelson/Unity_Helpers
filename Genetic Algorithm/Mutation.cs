@@ -60,4 +60,56 @@ public class Mutation
         df.InsertZeroesAtFirstAndLast(outputList);
         return outputList;
     }
+
+
+    public List<int> DM(List<int> inputList)
+    // displacement mutation
+    {
+        List<int> listIn = df.CloneIntList(inputList);
+        df.TrimListFirstAndLast(listIn);
+        // fill output candidate with zeros
+        // double its size to we can displace to any position
+        List<int> outputList = new List<int>();
+        for (int i = 0; i < listIn.Count * 2; i++)
+        {
+            outputList.Add(0);
+        }
+        // selection length to move
+        int sectionLength = Random.Range(2, listIn.Count - 1);
+        // start and end of selection section
+        int a = Random.Range(0, listIn.Count - sectionLength);
+        int b = a + sectionLength;
+        // choose a position to move it to
+        int newPos = Random.Range(0, listIn.Count);
+        while (newPos >= a && newPos <= b)
+        {
+            newPos = Random.Range(0, listIn.Count);
+        }
+        // move our selection
+        for (int i = a; i <= b; i++ )
+        {
+            outputList[newPos] = listIn[i];
+            newPos += 1;
+        }
+        // iterate first list filliing in blanks (0s)
+        for (int i = 0; i < listIn.Count; i++)
+        {
+            if (outputList[i] == 0)
+            {
+                for (int j = 0; j < listIn.Count; j++)
+                {
+                    if (!outputList.Contains(listIn[j]))
+                    {
+                        outputList[i] = listIn[j];
+                        break;
+                    }
+                }
+            }
+        }
+        // strip all zeroes placeholders
+        outputList.RemoveAll(i => i == 0);
+        // add zeroes to start and end as usual
+        df.InsertZeroesAtFirstAndLast(outputList);
+        return outputList;
+    }
 }
