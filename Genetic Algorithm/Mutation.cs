@@ -112,4 +112,45 @@ public class Mutation
         df.InsertZeroesAtFirstAndLast(outputList);
         return outputList;
     }
+
+
+    public List<int> IM(List<int> inputList)
+    // insertion mutation
+    {
+        List<int> listIn = df.CloneIntList(inputList);
+        df.TrimListFirstAndLast(listIn);
+        // create an output candidate filled with blanks
+        List<int> outputList = new List<int>();
+        for (int i = 0; i < listIn.Count; i++)
+        {
+            outputList.Add(0);
+        }
+        // choose a random value position
+        int v = Random.Range(0, listIn.Count);
+        // choose a random position to move it to
+        int np = Random.Range(0, listIn.Count);
+        while (v == np)
+        {
+            np = Random.Range(0, listIn.Count);
+        }
+        // add the value to new position
+        outputList[np] = listIn[v];
+        // iterate parent filling in blanks
+        for (int i = 0; i < listIn.Count; i++)
+        {
+            if (outputList[i] == 0)
+            {
+                for (int j = 0; j < listIn.Count; j++)
+                {
+                    if (!outputList.Contains(listIn[j]))
+                    {
+                        outputList[i] = listIn[j];
+                        break;
+                    }
+                }
+            }
+        }
+        df.InsertZeroesAtFirstAndLast(outputList);
+        return outputList;
+    }
 }
