@@ -11,17 +11,6 @@ public class DataFunctions
     public float GetRandomFloat(float min, float max) { return Random.Range(min, max); }
 
 
-    public List<int> CloneIntList(List<int> inputList)
-    {
-        List<int> outputList = new List<int>();
-        foreach (int i in inputList)
-        {
-            outputList.Add(i);
-        }
-        return outputList;
-    }
-
-
     public string FormatIntList(List<int> inputList)
     {
         string outputString = "";
@@ -35,8 +24,7 @@ public class DataFunctions
 
     public List<int> ShuffleIntList(List<int> inputList)
     {
-        List<int> outputList = new List<int>();
-        outputList = CloneIntList(inputList);
+        List<int> outputList = new List<int>(inputList);
         int temp;
         for (int i = 0; i < inputList.Count; i++)
         {
@@ -86,20 +74,6 @@ public class DataFunctions
         }
 
         return result;
-    }
-
-
-    public void TrimListFirstAndLast(List<int> inputList)
-    {
-        inputList.RemoveAt(0);
-        inputList.RemoveAt(inputList.Count - 1);
-    }
-
-
-    public void InsertZeroesAtFirstAndLast(List<int> inputList)
-    {
-        inputList.Insert(0, 0);
-        inputList.Add(0);
     }
 
 

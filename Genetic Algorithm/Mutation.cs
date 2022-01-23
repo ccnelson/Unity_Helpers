@@ -16,9 +16,7 @@ public class Mutation
     public List<int> EM(List<int> inputList)
     // exchange mutation
     {
-        List<int> outputList = new List<int>();
-        outputList = df.CloneIntList(inputList);
-        df.TrimListFirstAndLast(outputList);
+        List<int> outputList = new List<int>(inputList);
         int a = Random.Range(0, outputList.Count);
         int b = Random.Range(0, outputList.Count);
         while (a == b)
@@ -28,7 +26,6 @@ public class Mutation
         int temp = outputList[a];
         outputList[a] = outputList[b];
         outputList[b] = temp;
-        df.InsertZeroesAtFirstAndLast(outputList);
         return outputList;
     }
 
@@ -36,9 +33,7 @@ public class Mutation
     public List<int> SM(List<int> inputList)
     // scramble mutation
     {
-        List<int> outputList = new List<int>();
-        outputList = df.CloneIntList(inputList);
-        df.TrimListFirstAndLast(outputList);
+        List<int> outputList = new List<int>(inputList);
         int a = Random.Range(0, outputList.Count -1);
         int b = Random.Range(a +1, outputList.Count);
         List<int> scrambleSectionA = new List<int>();
@@ -57,7 +52,6 @@ public class Mutation
         {
             outputList[i] = scrambleQueue.Dequeue();
         }
-        df.InsertZeroesAtFirstAndLast(outputList);
         return outputList;
     }
 
@@ -65,8 +59,7 @@ public class Mutation
     public List<int> DM(List<int> inputList)
     // displacement mutation
     {
-        List<int> listIn = df.CloneIntList(inputList);
-        df.TrimListFirstAndLast(listIn);
+        List<int> listIn = new List<int>(inputList);
         // fill output candidate with zeros
         // double its size to we can displace to any position
         List<int> outputList = new List<int>();
@@ -108,8 +101,6 @@ public class Mutation
         }
         // strip all zeroes placeholders
         outputList.RemoveAll(i => i == 0);
-        // add zeroes to start and end as usual
-        df.InsertZeroesAtFirstAndLast(outputList);
         return outputList;
     }
 
@@ -117,8 +108,7 @@ public class Mutation
     public List<int> IM(List<int> inputList)
     // insertion mutation
     {
-        List<int> listIn = df.CloneIntList(inputList);
-        df.TrimListFirstAndLast(listIn);
+        List<int> listIn = new List<int>(inputList);
         // create an output candidate filled with blanks
         List<int> outputList = new List<int>();
         for (int i = 0; i < listIn.Count; i++)
@@ -150,7 +140,6 @@ public class Mutation
                 }
             }
         }
-        df.InsertZeroesAtFirstAndLast(outputList);
         return outputList;
     }
 }

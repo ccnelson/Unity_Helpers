@@ -12,14 +12,9 @@ public class Crossover
         df = new DataFunctions();
     }
 
-    public List<int> MPX(List<int> _parentA, List<int> _parentB)
+    public List<int> MPX(List<int> parentA, List<int> parentB)
     // maximal preservation crossover
     {
-        // clone and trim lists
-        List<int> parentA = df.CloneIntList(_parentA);
-        List<int> parentB = df.CloneIntList(_parentB);
-        df.TrimListFirstAndLast(parentA);
-        df.TrimListFirstAndLast(parentB);
         // set a random crossover somewhere inside sequence
         int crossoverPos = Random.Range(1, parentA.Count -1);
         // populate offspring with placeholder values
@@ -56,19 +51,12 @@ public class Crossover
                 }
             }
         }
-        // replace leading and ending zeroes
-        df.InsertZeroesAtFirstAndLast(offSpring);
         return offSpring;
     }
 
-    public List<int> PMX(List<int> _parentA, List<int> _parentB)
+    public List<int> PMX(List<int> parentA, List<int> parentB)
     // partially mapped crossover
     {
-        // clone and trim lists
-        List<int> parentA = df.CloneIntList(_parentA);
-        List<int> parentB = df.CloneIntList(_parentB);
-        df.TrimListFirstAndLast(parentA);
-        df.TrimListFirstAndLast(parentB);
         // choose 2 random points (starting a at zero and ending b at count would perhaps give more diversity?)
         int a = Random.Range(1, parentA.Count - 2);
         int b = Random.Range(a + 1, parentA.Count -1);
@@ -98,21 +86,15 @@ public class Crossover
                 }
             }
         }
-        df.InsertZeroesAtFirstAndLast(offspring);
         return offspring;
     }
 
 
-    public List<int> OBX(List<int> _parentA, List<int> _parentB)
+    public List<int> OBX(List<int> parentA, List<int> parentB)
     // order based crossover
     {
-        List<int> parentA = df.CloneIntList(_parentA);
-        List<int> parentB = df.CloneIntList(_parentB);
-        df.TrimListFirstAndLast(parentA);
-        df.TrimListFirstAndLast(parentB);
         // start with parent B
-        List<int> offspring = new List<int>();
-        offspring = df.CloneIntList(parentB);
+        List<int> offspring = new List<int>(parentB);
         // choose a random number of positions, at least 2 (its a combination), but less than all of them
         int noOfPositions = Random.Range(2, parentA.Count -1);
         List<int> positionsChosen = new List<int>();
@@ -144,7 +126,6 @@ public class Crossover
                 offspring[i] = valuesChosenQ.Dequeue();
             }
         }
-        df.InsertZeroesAtFirstAndLast(offspring);
         return offspring;
     }
 }
