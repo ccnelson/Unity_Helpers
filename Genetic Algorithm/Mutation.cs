@@ -59,41 +59,40 @@ public class Mutation
     public List<int> DM(List<int> inputList)
     // displacement mutation
     {
-        List<int> listIn = new List<int>(inputList);
         // fill output candidate with zeros
         // double its size to we can displace to any position
         List<int> outputList = new List<int>();
-        for (int i = 0; i < listIn.Count * 2; i++)
+        for (int i = 0; i < inputList.Count * 2; i++)
         {
             outputList.Add(0);
         }
         // selection length to move
-        int sectionLength = Random.Range(2, listIn.Count - 1);
+        int sectionLength = Random.Range(2, inputList.Count - 1);
         // start and end of selection section
-        int a = Random.Range(0, listIn.Count - sectionLength);
+        int a = Random.Range(0, inputList.Count - sectionLength);
         int b = a + sectionLength;
         // choose a position to move it to
-        int newPos = Random.Range(0, listIn.Count);
+        int newPos = Random.Range(0, inputList.Count);
         while (newPos >= a && newPos <= b)
         {
-            newPos = Random.Range(0, listIn.Count);
+            newPos = Random.Range(0, inputList.Count);
         }
         // move our selection
         for (int i = a; i <= b; i++ )
         {
-            outputList[newPos] = listIn[i];
+            outputList[newPos] = inputList[i];
             newPos += 1;
         }
         // iterate first list filliing in blanks (0s)
-        for (int i = 0; i < listIn.Count; i++)
+        for (int i = 0; i < inputList.Count; i++)
         {
             if (outputList[i] == 0)
             {
-                for (int j = 0; j < listIn.Count; j++)
+                for (int j = 0; j < inputList.Count; j++)
                 {
-                    if (!outputList.Contains(listIn[j]))
+                    if (!outputList.Contains(inputList[j]))
                     {
-                        outputList[i] = listIn[j];
+                        outputList[i] = inputList[j];
                         break;
                     }
                 }
@@ -108,38 +107,99 @@ public class Mutation
     public List<int> IM(List<int> inputList)
     // insertion mutation
     {
-        List<int> listIn = new List<int>(inputList);
         // create an output candidate filled with blanks
         List<int> outputList = new List<int>();
-        for (int i = 0; i < listIn.Count; i++)
+        for (int i = 0; i < inputList.Count; i++)
         {
             outputList.Add(0);
         }
         // choose a random value position
-        int v = Random.Range(0, listIn.Count);
+        int v = Random.Range(0, inputList.Count);
         // choose a random position to move it to
-        int np = Random.Range(0, listIn.Count);
+        int np = Random.Range(0, inputList.Count);
         while (v == np)
         {
-            np = Random.Range(0, listIn.Count);
+            np = Random.Range(0, inputList.Count);
         }
         // add the value to new position
-        outputList[np] = listIn[v];
+        outputList[np] = inputList[v];
         // iterate parent filling in blanks
-        for (int i = 0; i < listIn.Count; i++)
+        for (int i = 0; i < inputList.Count; i++)
         {
             if (outputList[i] == 0)
             {
-                for (int j = 0; j < listIn.Count; j++)
+                for (int j = 0; j < inputList.Count; j++)
                 {
-                    if (!outputList.Contains(listIn[j]))
+                    if (!outputList.Contains(inputList[j]))
                     {
-                        outputList[i] = listIn[j];
+                        outputList[i] = inputList[j];
                         break;
                     }
                 }
             }
         }
+        return outputList;
+    }
+
+
+    public List<int> IVM(List<int> inputList)
+    // inversion mutation
+    {
+        List<int> outputList = new List<int>(inputList);
+        // selection length
+        int sectionLength = Random.Range(2, inputList.Count - 1);
+        // start and end of selection
+        int a = Random.Range(0, inputList.Count - sectionLength);
+        int b = a + sectionLength;
+        // counter moving fwd
+        int i = a;
+        // loop moving bkwd
+        for (int j = b; j >= a; j--)
+        {
+            outputList[j] = inputList[i];
+            i += 1;
+        }        
+        return outputList;
+    }
+
+
+    public List<int> DIVM(List<int> inputList)
+    // displaced inversion mutation
+    // TODO: improve this (DM too)
+    {
+        List<int> outputList = new List<int>();
+        for (int i = 0; i < inputList.Count * 2; i++)
+        {
+            outputList.Add(0);
+        }
+        int sectionLength = Random.Range(2, inputList.Count - 1);
+        int a = Random.Range(0, inputList.Count - sectionLength);
+        int b = a + sectionLength;
+        int newPos = Random.Range(0, inputList.Count);
+        while (newPos >= a && newPos <= b)
+        {
+            newPos = Random.Range(0, inputList.Count);
+        }
+        for (int i = b; i >= a; i--)
+        {
+            outputList[newPos] = inputList[i];
+            newPos += 1;
+        }
+        for (int i = 0; i < inputList.Count; i++)
+        {
+            if (outputList[i] == 0)
+            {
+                for (int j = 0; j < inputList.Count; j++)
+                {
+                    if (!outputList.Contains(inputList[j]))
+                    {
+                        outputList[i] = inputList[j];
+                        break;
+                    }
+                }
+            }
+        }
+        outputList.RemoveAll(i => i == 0);
         return outputList;
     }
 }
