@@ -128,4 +128,75 @@ public class Crossover
         }
         return offspring;
     }
+
+
+    public List<int> PBX(List<int> parentA, List<int> parentB)
+    // position based crossover
+    {
+        List<int> offspring = new List<int>(parentA);
+        int numberOfPos = Random.Range(2, offspring.Count);
+        List<int> posList = new List<int>();
+        // create list of positons to clear
+        for (int i = 0; i < numberOfPos; i++)
+        {
+            int p = Random.Range(0, offspring.Count);
+            while (posList.Contains(p))
+            {
+                p = Random.Range(0, offspring.Count);
+            }
+            posList.Add(p);
+        }
+        // clear chosen positions
+        for (int i = 0; i < offspring.Count; i++)
+        {
+            if (posList.Contains(i))
+            {
+                offspring[i] = 0;
+            }
+        }
+        // fill in blanks maintaining parent Bs order
+        for (int i = 0; i < offspring.Count; i++)
+        {
+            if (offspring[i] == 0)
+            {
+                for (int j = 0; j < parentB.Count; j++)
+                {
+                    if (!offspring.Contains(parentB[j]))
+                    {
+                        offspring[i] = parentB[j];
+                        break;
+                    }
+                }
+            }
+        }
+        return offspring;
+    }
+
+    public List<int> APX(List<int> parentA, List<int> parentB)
+    // alternating position crossover
+    {
+        List<int> offspring = new List<int>();
+        for (int i = 0; i < parentA.Count; i++)
+        {
+            if (offspring.Count != parentA.Count)
+            {
+                if (!offspring.Contains(parentA[i]))
+                {
+                    offspring.Add(parentA[i]);
+                }
+            }
+            if (offspring.Count != parentA.Count)
+            {
+                if (!offspring.Contains(parentB[i]))
+                {
+                    offspring.Add(parentB[i]);
+                }
+            }
+            if (offspring.Count == parentA.Count)
+            {
+                break;
+            }
+        }
+        return offspring;
+    }
 }
