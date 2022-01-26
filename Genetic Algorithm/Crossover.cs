@@ -199,4 +199,80 @@ public class Crossover
         }
         return offspring;
     }
+
+
+    public List<int> MOX(List<int> parentA, List<int> parentB)
+    // modified order crossover
+    {
+        List<int> offspring = new List<int>(parentB);
+        int mid = (int)parentA.Count / 2;
+        Queue<int> pAvals = new Queue<int>();
+        // loop from mid point of A
+        for (int i = mid; i < parentA.Count; i++)
+        {
+            // loop thru offspring looking for values to remove
+            for (int j = 0; j < offspring.Count; j++)
+            {
+                if (offspring[j] == parentA[i])
+                {
+                    offspring[j] = 0;
+                }
+            }
+            // queue em up
+            pAvals.Enqueue(parentA[i]);
+        }
+        // loop through offspring replacing blanks with queued
+        for (int i = 0; i < offspring.Count; i++)
+        {
+            if (offspring[i] == 0)
+            {
+                offspring[i] = pAvals.Dequeue();
+            }
+        }
+        return offspring;
+    }
+
+
+    public List<int> MPMX(List<int> parentA, List<int> parentB)
+    // modified partially mapped crossover
+    {
+        List<int> offspring = new List<int>(parentA);
+        // split into 3 sections
+        int a = Random.Range(1, parentA.Count - 2);
+        int b = Random.Range(a+1, parentA.Count - 1);
+        // remove all but the middle section of A
+        for (int i = 0; i < a; i++)
+        {
+            offspring[i] = 0;
+        }
+        for (int i = b+1; i < offspring.Count; i++)
+        {
+            offspring[i] = 0;
+        }
+        // use B values able to retain oringinal position
+        for (int i = 0; i < parentB.Count; i++)
+        {
+            if (offspring[i] == 0)
+            {
+                if (!offspring.Contains(parentB[i]))
+                {
+                    offspring[i] = parentB[i];
+                }
+            }
+        }
+        // fill in blanks randomly
+        for (int i = 0; i < offspring.Count; i++)
+        {
+            if (offspring[i] == 0)
+            {
+                int rInd = Random.Range(0, parentB.Count);
+                while (offspring.Contains(parentB[rInd]))
+                {
+                    rInd = Random.Range(0, parentB.Count);
+                }
+                offspring[i] = parentB[rInd];
+            }
+        }
+        return offspring;
+    }
 }
