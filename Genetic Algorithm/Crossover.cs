@@ -275,4 +275,158 @@ public class Crossover
         }
         return offspring;
     }
+
+
+    public List<int> CX(List<int> parentA, List<int> parentB)
+    // cyclic crossover
+    {
+        List<int> offspring = new List<int>();
+        // empty candidate
+        for (int i = 0; i < parentA.Count; i++)
+        {
+            offspring.Add(0);
+        }
+        bool flip = false;
+        int len = parentA.Count - 1;
+        // iterate alternating parents, taking values from end & moving inwards
+        for (int i = 0; i < parentA.Count / 2; i++)
+        {
+            if (!flip)
+            {
+                if (offspring[i] == 0)
+                {
+                    if (!offspring.Contains(parentA[i]))
+                    {
+                        offspring[i] = parentA[i];
+                    }
+                }
+                if (offspring[len] == 0)
+                {
+                    if (!offspring.Contains(parentB[len]))
+                    {
+                        offspring[len] = parentB[len];
+                    }
+                }
+            }
+            else
+            {
+                if (offspring[i] == 0)
+                {
+                    if (!offspring.Contains(parentB[i]))
+                    {
+                        offspring[i] = parentB[i];
+                    }       
+                }
+                if (offspring[len] == 0)
+                {
+                    if (!offspring.Contains(parentA[len]))
+                    {
+                        offspring[len] = parentA[len];
+                    }                    
+                }
+            }
+            len -= 1;
+            flip = !flip;
+        }
+        // fill in blanks randomly
+        for (int i = 0; i < offspring.Count; i++)
+        {
+            if (offspring[i] == 0)
+            {
+                int rInd = Random.Range(0, parentB.Count);
+                while (offspring.Contains(parentB[rInd]))
+                {
+                    rInd = Random.Range(0, parentB.Count);
+                }
+                offspring[i] = parentB[rInd];
+            }
+        }
+        return offspring;
+    }
+
+
+    public List<int> ERX(List<int> parentA, List<int> parentB)
+    // edge recombination crossover
+    {
+        List<int> offspring = new List<int>();
+        // dictionary to map each node to its neighbours
+        Dictionary<string, List<int>> neighboursD = new Dictionary<string, List<int>>();
+        for (int i = 1; i <= parentA.Count; i++)
+        {
+            List<int> x = new List<int>();
+            // find neighbours of 'i' (overflow at start and end)
+            int indA = parentA.IndexOf(i);
+            int indB = parentB.IndexOf(i);
+            // there will be four neighbours
+            int indAleft = indA > 0 ? indA - 1 : parentA.Count -1;
+            int indAright = indA == parentA.Count -1 ? 0 : indA + 1;
+            int indBleft = indB > 0 ? indB - 1 : parentB.Count -1;
+            int indBright = indB == parentB.Count - 1 ? 0 : indB + 1;
+            x.Add(parentA[indAleft]);
+            x.Add(parentA[indAright]);
+            // there might be duplicates at this point
+            if (!x.Contains(parentB[indBleft]))
+            {
+                x.Add(parentB[indBleft]);
+            }
+            if (!x.Contains(parentB[indBright]))
+            {
+                x.Add(parentB[indBright]);
+            }
+            // add list x to neighbours
+            neighboursD.Add(i.ToString(), x);
+        }
+        // choose one of the starting values
+        int rando = Random.Range(0, 2);
+        int workingNo = rando == 0 ? parentA[0] : parentB[0];
+        offspring.Add(workingNo);
+        // sort lists, and remove references to starting value
+        foreach (KeyValuePair<string, List<int>> kvp in neighboursD)
+        {
+            kvp.Value.Sort();
+            kvp.Value.RemoveAll(i => i == workingNo);
+        }
+        // start building offspring
+        while (offspring.Count < parentA.Count)
+        {
+            int shortestlength = parentA.Count;
+            int shortestpos = parentA.Count;
+            
+            if (neighboursD.ContainsKey(workingNo.ToString()))
+            {
+                // examine neighbours list, taking the neighbour value which in turn relates to the shortest list
+                foreach (int i in neighboursD[workingNo.ToString()])
+                {
+                    if (neighboursD[i.ToString()].Count < shortestlength)
+                    {
+                        shortestpos = i;
+                        shortestlength = neighboursD[i.ToString()].Count;
+                    }
+                }
+            }
+            // if we have exhausted the neighbour lists, we will start getting duplicates
+            // or reference to empty lists, so check and generaate random value if so
+            if (!offspring.Contains(shortestpos))
+            {
+                offspring.Add(shortestpos);
+            }
+            else
+            {
+                int randN = Random.Range(1, parentA.Count + 1);
+                while (offspring.Contains(randN))
+                {
+                    randN = Random.Range(1, parentA.Count + 1);
+                }
+                shortestpos = randN;
+                offspring.Add(shortestpos);
+            }
+            workingNo = shortestpos;
+            // remove all references to chosen neighbour
+            foreach (KeyValuePair<string, List<int>> kvp in neighboursD)
+            {
+                kvp.Value.RemoveAll(i => i == workingNo);
+            }
+        }
+        return offspring;
+    }
 }
