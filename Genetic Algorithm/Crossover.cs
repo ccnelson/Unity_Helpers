@@ -429,4 +429,39 @@ public class Crossover
         }
         return offspring;
     }
+
+
+    public List<int> SCX(List<int> parentA, List<int> parentB)
+    // subtour chunks crossover
+    {
+        List<int> offspring = new List<int>(parentA);
+        // select a subtour
+        int subtourLength = Random.Range(2, parentA.Count - 1);
+        int a = Random.Range(0, parentA.Count - subtourLength);
+        int b = a + subtourLength;
+        // zero out all but subtour
+        for (int i = 0; i < parentA.Count; i++)
+        {
+            if (i < a || i > b)
+            {
+                offspring[i] = 0;
+            }
+        }
+        // fill in blanks maintaining parent Bs order
+        for (int i = 0; i < offspring.Count; i++)
+        {
+            if (offspring[i] == 0)
+            {
+                for (int j = 0; j < parentB.Count; j++)
+                {
+                    if (!offspring.Contains(parentB[j]))
+                    {
+                        offspring[i] = parentB[j];
+                        break;
+                    }
+                }
+            }
+        }
+        return offspring;
+    }
 }
