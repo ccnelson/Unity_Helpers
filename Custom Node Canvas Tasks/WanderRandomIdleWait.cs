@@ -78,14 +78,14 @@ namespace NodeCanvas.Tasks.Actions
         }
 
 
-        void DoWander()
+        private void DoWander()
         {
             wanderPos = RandomNavSphere(agent.transform.position, wanderDistance, NavMesh.AllAreas);
             agent.SetDestination(wanderPos);
         }
 
 
-        public static Vector3 RandomNavSphere(Vector3 playerOrigin, float distance, int layermask)
+        private Vector3 RandomNavSphere(Vector3 playerOrigin, float distance, int layermask)
         {
             Vector3 randomDirection = Random.insideUnitSphere * distance;
             randomDirection += playerOrigin;
