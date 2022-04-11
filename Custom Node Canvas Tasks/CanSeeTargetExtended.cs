@@ -5,12 +5,6 @@
 // Store multiple targets, check if they are in range, FOV, and agents view is un-obstructed
 // by objects on targetLayers. Store a blackboard reference to the closest target,
 // along with the position it was last seen at. 
-// NOTE //
-// To save the last seen position in the blackboard:
-// > choose the blackboard option of the parameter
-// > Graph > Create New > <enter var name>
-// in the blackboard itself:
-// > Settings cog > Change Type > Unity > Vector3
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 using System.Collections.Generic;
@@ -33,8 +27,8 @@ namespace NodeCanvas.Tasks.Conditions
         public BBParameter<float> rayCastHeight = 1f;
         public BBParameter<string> targetTag1 = "Player";
         public BBParameter<string> targetTag2 = "AI";
-        public BBParameter<Blackboard> saveTarget;
-        public BBParameter<Blackboard> saveTargetPosition;
+        public BBParameter<GameObject> savedTarget;
+        public BBParameter<Vector3> savedTargetPosition;
 
 
         private bool targetInFOV = false;
@@ -94,10 +88,8 @@ namespace NodeCanvas.Tasks.Conditions
             // shortestDistance will only have changed on finding a valid target
             if (shortestDistance < sightDistance.value)
             {
-                // save our target and its last position
-                saveTarget.varRef.value = targetObjects.value[bestTargetIndex];
-                // track target last position
-                saveTargetPosition.varRef.value = targetObjects.value[bestTargetIndex].transform.position;
+                savedTarget.value = targetObjects.value[bestTargetIndex];
+                savedTargetPosition.value = targetObjects.value[bestTargetIndex].transform.position;
 
                 return true;
             }
