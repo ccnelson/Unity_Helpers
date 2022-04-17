@@ -6,6 +6,7 @@
 // Aim transform should be an empty object attached to parent.
 // Barrel is location projectile will instatiate.
 // Projectile is a prefab bullet with self contained behaviour.
+// Pooling and sounds need to be set, to be passed to projectile.
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 using RootMotion.FinalIK;
@@ -24,13 +25,23 @@ public class SingleRangedAttack : MonoBehaviour, IAttack
     [SerializeField] private AimIK aimik;
     [SerializeField] private Transform aimTransform;
 
+    [SerializeField] ParticleObjectPooler projectilePool;
+    [SerializeField] ParticleObjectPooler impactPool;
+    [SerializeField] AudioSource bulletShootSound;
+    [SerializeField] AudioSource bulletImpactSound;
+
     private Vector3 targetOffset { get { return new Vector3(target.position.x, target.position.y + 1f, target.position.z); } }
 
 
     public void Attack()
     {
-        StartAim();
+        //StartAim();
         GameObject bullet = Instantiate(projectile, barrel.position, barrel.rotation);
+        Projectile p = bullet.GetComponent<Projectile>();
+        p.projectilePool = projectilePool;
+        p.impactPool = impactPool;
+        p.bulletShootSound = bulletShootSound;
+        p.bulletImpactSound = bulletImpactSound;
         bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * speed);
     }
 
