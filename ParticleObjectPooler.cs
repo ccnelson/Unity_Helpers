@@ -48,4 +48,20 @@ public class ParticleObjectPooler : MonoBehaviour
             }
         }
     }
+
+    public GameObject GetFromPool(Vector3 pos, Quaternion rot)
+    {
+        for (int i = 0; i < _poolCount; i++)
+        {
+            if (!_pool[i].activeInHierarchy)
+            {
+                _pool[i].transform.position = pos;
+                _pool[i].transform.rotation = rot;
+                _pool[i].SetActive(true);
+                return _pool[i];
+            }
+        }
+        return null;
+    }
+    
 }
