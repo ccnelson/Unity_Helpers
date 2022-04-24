@@ -8,6 +8,9 @@
 // private ParticleObjectPooler somePool;
 // public string somePoolName;
 // somePool = PoolManager.poolManager.GetParticleObjectPooler(somePoolName);
+//
+// This class uses 'Awake' to assign the pools. Therefore to avoid race conditions
+// the above should take place after 'Awake', preferably in 'Start'
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 using System.Collections;
