@@ -1,14 +1,13 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // C NELSON 2022
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Object Pooler for particle systems.
-// Assumes the paricles are set to 'Stop Action = Disable'
+// Object Pooler.
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParticleObjectPooler : MonoBehaviour
+public class ObjectPooler : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _pool;
     [SerializeField] private GameObject _prefab;
@@ -58,5 +57,4 @@ public class ParticleObjectPooler : MonoBehaviour
         }
         return null;
     }
-    
 }

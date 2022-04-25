@@ -1,7 +1,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // C NELSON 2022
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Particle Object Pool Manager
+// Particle and Object Pool Manager
 // Attach to empty object, assign pool parent objects to pools list, ensure each object has a name.
 // Access this singleton from other scripts without a reference:
 //
@@ -22,27 +22,41 @@ public class PoolManager : MonoBehaviour
     public static PoolManager poolManager;
 
 
-    public List<GameObject> pools;
-    public Dictionary<string, ParticleObjectPooler> poolDict;
+    [SerializeField] private List<GameObject> particlePools;
+    private Dictionary<string, ParticleObjectPooler> particlePoolDict;
+
+    [SerializeField] private List<GameObject> objectPools;
+    private Dictionary<string, ObjectPooler> objectPoolDict;
 
 
     private void Awake()
     {
         poolManager = this;
 
-        poolDict = new Dictionary<string, ParticleObjectPooler>();
+        particlePoolDict = new Dictionary<string, ParticleObjectPooler>();
+        objectPoolDict = new Dictionary<string, ObjectPooler>();
 
-        foreach (GameObject p in pools)
+        for (int i = 0; i < particlePools.Count; i++)
         {
-            ParticleObjectPooler particlePooler = p.GetComponent<ParticleObjectPooler>();
-            poolDict[particlePooler.poolName] = particlePooler;
+            ParticleObjectPooler particlePooler = particlePools[i].GetComponent<ParticleObjectPooler>();
+            particlePoolDict[particlePooler.poolName] = particlePooler;
+        }
+
+        for (int i = 0; i < objectPools.Count; i++)
+        {
+            ObjectPooler objectPooler = objectPools[i].GetComponent<ObjectPooler>();
+            objectPoolDict[objectPooler.poolName] = objectPooler;
         }
     }
 
 
-
     public ParticleObjectPooler GetParticleObjectPooler(string n)
     {
-        return poolDict[n];
+        return particlePoolDict[n];
+    }
+
+    public ObjectPooler GetObjectPooler(string n)
+    {
+        return objectPoolDict[n];
     }
 }
