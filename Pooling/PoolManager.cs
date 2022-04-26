@@ -33,6 +33,8 @@ public class PoolManager : MonoBehaviour
     {
         poolManager = this;
 
+        DontDestroyOnLoad(this.gameObject);
+
         particlePoolDict = new Dictionary<string, ParticleObjectPooler>();
         objectPoolDict = new Dictionary<string, ObjectPooler>();
 

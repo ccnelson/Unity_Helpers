@@ -7,6 +7,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ParticleObjectPooler : MonoBehaviour
 {
@@ -14,9 +15,24 @@ public class ParticleObjectPooler : MonoBehaviour
     [SerializeField] private GameObject _prefab;
     [SerializeField] private int _poolCount;
     [SerializeField] public string poolName;
+    void OnEnable() { SceneManager.sceneLoaded += OnSceneLoaded; }
+
+    void OnDisable() { SceneManager.sceneLoaded -= OnSceneLoaded; }
+
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PopulatePool();
+    }
 
 
     private void Start()
+    {
+        PopulatePool();
+    }
+
+
+    private void PopulatePool()
     {
         _pool = new List<GameObject>();
 
