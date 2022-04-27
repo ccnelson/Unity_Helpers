@@ -6,7 +6,6 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ObjectPooler : MonoBehaviour
 {
@@ -14,17 +13,6 @@ public class ObjectPooler : MonoBehaviour
     [SerializeField] private GameObject _prefab;
     [SerializeField] private int _poolCount;
     [SerializeField] public string poolName;
-
-
-    void OnEnable() { SceneManager.sceneLoaded += OnSceneLoaded; }
-
-    void OnDisable() { SceneManager.sceneLoaded -= OnSceneLoaded; }
-
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        PopulatePool();
-    }
 
 
     private void Start()
