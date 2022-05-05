@@ -27,6 +27,8 @@ namespace NodeCanvas.Tasks.Actions
         public BBParameter<string> idleAnimatorParameter = "isIdle";
         public BBParameter<float> maxWait = 5f;
         public BBParameter<float> minWait = 1f;
+        public BBParameter<bool> useProp = false;
+        public BBParameter<GameObject> prop;
 
         private bool arrived = false;
         private bool finished = false;
@@ -74,7 +76,12 @@ namespace NodeCanvas.Tasks.Actions
 
                 if (!isAnimating)
                 {
+                    agent.speed = 0;
                     animator.value.SetBool(idleAnimatorParameter.value, true);
+                    if (useProp.value)
+                    {
+                        prop.value.SetActive(true);
+                    }
                     isAnimating = true;
                 }
             }
@@ -87,6 +94,10 @@ namespace NodeCanvas.Tasks.Actions
             if (finished)
             {
                 timer = 0f;
+                if (useProp.value)
+                {
+                    prop.value.SetActive(false);
+                }
                 isFacing = false;
                 arrived = false;
                 finished = false;
