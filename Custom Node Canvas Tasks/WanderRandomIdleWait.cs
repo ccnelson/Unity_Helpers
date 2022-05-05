@@ -37,7 +37,8 @@ namespace NodeCanvas.Tasks.Actions
 
         // animation vars
         public BBParameter<string> idleAnimatorParameter = "isIdle";
-        public Animator animator;
+        //public Animator animator;
+        public BBParameter<Animator> animator;
 
         private bool processingPath = false;
         
@@ -47,7 +48,7 @@ namespace NodeCanvas.Tasks.Actions
             processingPath = false;
             agent.speed = speed.value;
             waitTime = Random.Range(waitTimeMin.value, waitTimeMax.value);
-            animator.SetBool(idleAnimatorParameter.value, true);
+            animator.value.SetBool(idleAnimatorParameter.value, true);
         }
 
 
@@ -56,7 +57,7 @@ namespace NodeCanvas.Tasks.Actions
             if ((elapsedTime >= waitTime) && (processingPath == false))
             {
                 processingPath = true;
-                animator.SetBool(idleAnimatorParameter.value, false);
+                animator.value.SetBool(idleAnimatorParameter.value, false);
                 DoWander();
             }
 
@@ -71,7 +72,7 @@ namespace NodeCanvas.Tasks.Actions
 
         protected override void OnStop()
         {
-            if (agent.gameObject.activeSelf)
+            if (agent.gameObject.activeSelf && agent.navMeshOwner)
             {
                 agent.ResetPath();
             }
