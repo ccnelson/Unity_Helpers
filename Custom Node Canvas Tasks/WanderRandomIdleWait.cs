@@ -46,7 +46,7 @@ namespace NodeCanvas.Tasks.Actions
         protected override void OnExecute()
         {
             processingPath = false;
-            agent.speed = speed.value;
+            agent.speed = 0;
             waitTime = Random.Range(waitTimeMin.value, waitTimeMax.value);
             animator.value.SetBool(idleAnimatorParameter.value, true);
         }
@@ -58,6 +58,7 @@ namespace NodeCanvas.Tasks.Actions
             {
                 processingPath = true;
                 animator.value.SetBool(idleAnimatorParameter.value, false);
+                agent.speed = speed.value;
                 DoWander();
             }
 
