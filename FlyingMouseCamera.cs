@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
@@ -37,7 +36,7 @@ public class FlyingMouseCamera : MonoBehaviour
 		{
 			Focused = true;
 		}
-		
+
 		velocity = Vector3.Lerp(velocity, Vector3.zero, dampingCoefficient * Time.deltaTime);
 		transform.position += velocity * Time.deltaTime;
 	}
@@ -55,25 +54,25 @@ public class FlyingMouseCamera : MonoBehaviour
 		{
 			Focused = false;
 		}
-			
+
 	}
 
 	private Vector3 GetAccelerationVector()
 	{
 		Vector3 moveInput = default;
-		
+
 		void AddMovement(KeyCode key, Vector3 dir)
 		{
 			if (Input.GetKey(key))
 				moveInput += dir;
 		}
-		
+
 		AddMovement(KeyCode.W, Vector3.forward);
 		AddMovement(KeyCode.S, Vector3.back);
 		AddMovement(KeyCode.D, Vector3.right);
 		AddMovement(KeyCode.A, Vector3.left);
-		AddMovement(KeyCode.Space, Vector3.up);
-		AddMovement(KeyCode.LeftControl, Vector3.down);
+		AddMovement(KeyCode.E, Vector3.up);
+		AddMovement(KeyCode.Q, Vector3.down);
 		Vector3 direction = transform.TransformVector(moveInput.normalized);
 
 		if (Input.GetKey(KeyCode.LeftShift))
